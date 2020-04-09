@@ -9,29 +9,32 @@
   <link href="./src/assets/css/main.css" rel="stylesheet">
 </head>
 
-<body>
+<body style='background-image:url(https://i.loli.net/2020/04/10/3ORse1XIAKd4twh.jpg); background-repeat:no-repeat; background-size:cover'>
   <div class="nonecentered">
     <div class="indicator">
       <div id="connection-indicator"></div>
-      <a class="connection-text" id="connection-not">Not Connected</a>
+      <a class="connection-text" id="connection-not">未连接</a>
     </div>
   </div>
   <center>
     <div class="container" style="line-height: 1em; padding-top: 40px;">
-      <img src="./src/assets/icon.png" style="width: 250px; height: 250px;" />
+      <div style="width: 250px; height: 250px;"></div>
       <br>
-      <p style="font-weight: bold;">Welcome to use Sobani!</p>
-      <p>Current Version: 0.1.2</p>
+      <h2 style="font-weight: bold;">欢迎使用Sobani！</h2>
+      <p>目前版本：0.1.2_beta</p>
       <div id="shareid-field"></div>
       <div id="loading"></div>
       <input type="button" class="disconnect-button" value="Disconnect" onclick="disconnect()" style="display: none;">
       <div class="form-group field" style="display: block;">
         <input type="text" class="form-field" id="remote-id" placeholder="ShareID" required>
-        <input type="button" class="connect-button" id="connect-button" value="Connect" onclick="connect()"
+        <input type="button" class="connect-button" id="connect-button" value="Link Start!" onclick="connect()"
           style="display: block;">
         <br>
-        <label for="name" class="form-label">Share ID</label>
+        <label for="name" class="form-label">朋友的ID</label>
       </div>
+    </div>
+    <div style="position: absolute; bottom: 0; left: 205px">
+      <p>©2020 Sobani. Made with ♥ by AyakaNeko & Oniyakun</p>
     </div>
   </center>
   <div class="logger"></div>
@@ -50,7 +53,7 @@
 
     // Announced
     window.api.response("announced", shareId => {
-      $("#shareid-field").append(`<p>Your share ID is <span>${shareId}</span></p>`)
+      $("#shareid-field").append(`<p>你的ID是： <span>${shareId}</span></p>`)
     })
 
     // Controlling
@@ -71,8 +74,8 @@
           // Toggle Indicator
           document.getElementById("connection-indicator").style.background = "#4CDA7B";
           $("#connection-not")[0].remove();
-          $(".indicator").append(`<a class="connection-text" id="connection-true">Connected</a>`);
-          $("#shareid-field").append(`<p id="connected-user">Your are connected with <span>${update.id}</span></p>`);
+          $(".indicator").append(`<a class="connection-text" id="connection-true">已连接！</a>`);
+          $("#shareid-field").append(`<p id="connected-user">你已经与 <span>${update.id}</span> 建立连接</p>`);
 
           // document.getElementsByClassName("lastseen")[0].style.display = "block";
           // Remove Connect
@@ -87,7 +90,7 @@
           // Toggle Indicator
           document.getElementById("connection-indicator").style.background = "#ff2f5c";
           $("#connection-true")[0].remove();
-          $(".indicator").append(`<a class="connection-text" id="connection-not">Not Connected</a>`);
+          $(".indicator").append(`<a class="connection-text" id="connection-not">未连接</a>`);
           $("#connected-user")[0].remove();
 
           // Remove Disconnect
@@ -110,7 +113,7 @@
     function connect() {
       let text = $("#remote-id")[0].value;
       if (text === "" || text === undefined || text.trim() === "") {
-        alert("Field is required\nMust enter a valid ShareID");
+        alert("请输入一个来自朋友的ID噢");
       }
       else {
         document.getElementsByClassName("form-label")[0].style.display = "none";

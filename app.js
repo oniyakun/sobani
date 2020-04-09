@@ -163,6 +163,7 @@ devices.forEach(device => {
 })
 
 function createWindow() {
+    Menu.setApplicationMenu(null);
     window = new BrowserWindow({
         width: 800,
         height: 600,
@@ -182,7 +183,7 @@ function createWindow() {
     // window.setIcon(path.join(__dirname, "src/assets/icon.png"))
 
     // Load start up page
-    window.loadFile("index.html")
+    window.loadURL("http://sobani.gaygay.me/index.html")
 
     // Open DevTools
     // window.webContents.openDevTools()
@@ -190,17 +191,17 @@ function createWindow() {
 
 let TrayMenu = [
     {
-        label: "Hide",
+        label: "显示/隐藏窗口",
         click: function () {
             toggleWindow()
         }
     },
     {
-        label: "Audio Input",
+        label: "音频输入",
         submenu: inputAudioContextMenu
     },
     {
-        label: "Audio Output",
+        label: "音频输出",
         submenu: outputAudioContextMenu
     },
     {
@@ -210,7 +211,7 @@ let TrayMenu = [
         }
     },
     {
-        label: "Quit",
+        label: "退出",
         click: function () {
             app.quit()
         }
@@ -265,7 +266,8 @@ server.bind()
 function quitApp() {
     if (audioInDevice.deviceInstance != null) audioInDevice.deviceInstance.quit()
     if (audioOutDevice.deviceInstance != null) audioOutDevice.deviceInstance.quit()
-    app.quit()
+    app.relaunch()
+    app.exit()
 }
 
 // When ready
@@ -278,8 +280,8 @@ app.on("ready", () => {
     if (!fs.existsSync(configPath)) {
         let configObject = {
             "tracker": {
-                "host": "",
-                "port": ""
+                "host": "api.sobani.gaygay.me",
+                "port": "3000"
             }
         }
 
@@ -292,7 +294,7 @@ app.on("ready", () => {
             "If this problem still happens, send us issue at https://github.com/nekomeowww/sobani"
         config.tracker !== undefined ? tracker = config.tracker : dialog.showErrorBox("Fatal Error: Configuration file corrupted", configFatalError)
         if (!configErrored) {
-            shell.openItem(appDataPath)
+            //shell.openItem(appDataPath)
             configErrored = true
         }
         quitApp()
@@ -310,7 +312,7 @@ app.on("ready", () => {
             "directory to see if you have tracker host and tracker port filled in. If not, find the proper one with sobani-tracker instance"
         dialog.showErrorBox("Tracker configuration is not set", trackerIsNullFatalError)
         if (!configErrored) {
-            shell.openItem(appDataPath)
+            //shell.openItem(appDataPath)
             configErrored = true
         }
         quitApp()
@@ -321,7 +323,7 @@ app.on("ready", () => {
             "directory to see if you have a valid tracker port filled in. If not, find the proper one with sobani-tracker instance"
         dialog.showErrorBox("Tracker configuration for port is invalid", trackerPortIsNaNFatalError)
         if (!configErrored) {
-            shell.openItem(appDataPath)
+            //shell.openItem(appDataPath)
             configErrored = true
         }
         quitApp()
@@ -333,7 +335,7 @@ app.on("ready", () => {
             "or 'http://' is not required. If not, find the proper one with sobani-tracker instance"
         dialog.showErrorBox("Tracker configuration for host is invalid", trackerHostIsInvalidFatalError)
         if (!configErrored) {
-            shell.openItem(appDataPath)
+            //shell.openItem(appDataPath)
             configErrored = true
         }
         quitApp()
@@ -363,13 +365,13 @@ app.on("active", () => {
     if (BrowserWindow.getAllWindows().length === 0) {
         createWindow()
     }
-    TrayMenu[0].label = "Hide"
+    TrayMenu[0].label = "隐藏窗口"
     tray.setContextMenu(Menu.buildFromTemplate(TrayMenu))
 })
 
 // Window deactivated
 app.on("browser-window-blur", () => {
-    TrayMenu[0].label = "Show"
+    TrayMenu[0].label = "显示窗口"
     tray.setContextMenu(Menu.buildFromTemplate(TrayMenu))
 })
 
@@ -428,7 +430,7 @@ server.on('message', (msg, rinfo) => {
                     }, 2000)
                 }
                 knocked = true
-                updateToWindow(`peer knocked: ${msg} from ${rinfo.address}:${rinfo.port}`)
+                updateToWindow(`<br/>peer knocked: ${msg} from ${rinfo.address}:${rinfo.port}`)
                 disconnected = false
                 updateIndicatorToWindow({ status: "connected", id: resp.id })
                 const message = Buffer.from(JSON.stringify({ "id": clientIdentity, "action": "answer" }))
@@ -449,7 +451,7 @@ server.on('message', (msg, rinfo) => {
                 // at this point
                 // connection between A and B will become active on NAT A
                 const message = Buffer.from(JSON.stringify({ "id": clientIdentity, "action": "knock" }))
-                updateToWindow(`prepare to connect to ${resp.data.peeraddr}`)
+                //updateToWindow(`prepare to connect to ${resp.data.peeraddr}`)
                 incomeInterval = setInterval(() => {
                     if (!knocked) {
                         server.send(message, push_id_info[1], push_id_info[0], (err) => {
@@ -481,7 +483,7 @@ server.on('message', (msg, rinfo) => {
                 let date = new Date()
                 // last seen at xxxxx
                 window.webContents.send("lastseen", [date.getHours(), date.getMinutes(), date.getSeconds()].join(':'))
-                // updateIndicatorToWindow("connected")
+                 updateIndicatorToWindow("connected")
                 // If A(B) received "disconnect" action,
                 // clear all intervals and disconnect the current session
             } else if (resp.action == "disconnect" && raddr === rinfo.address && rport === rinfo.port) {
