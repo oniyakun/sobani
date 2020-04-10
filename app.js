@@ -119,7 +119,7 @@ function audioContextMenuBuilder(deviceName, deviceId, type) {
                     })
                     break
                 case "out":
-                    if (audioInDevice.started && audioInDevice.deviceInstance !== null) {
+                    if (audioOutDevice.started && audioOutDevice.deviceInstance !== null) {
                         console.log("Switching device...")
                         audioOutDevice.deviceInstance.quit()
                     }
