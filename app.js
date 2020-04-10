@@ -159,7 +159,7 @@ server.bind()
 
 // Application Quiting Function
 function quitApp() {
-    audio.quit()
+    app.relaunch()
     app.quit()
 }
 
