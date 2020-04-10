@@ -61,7 +61,7 @@ function createWindow() {
     Menu.setApplicationMenu(null);
     window = new BrowserWindow({
         width: 800,
-        height: 600,
+        height: 630,
         title: "Sobani",
         backgroundColor: "#FFFFFF",
         icon: icon,
@@ -324,7 +324,7 @@ server.on('message', (msg, rinfo) => {
                     }, 2000)
                 }
                 knocked = true
-                updateToWindow(`<br/>peer knocked: ${msg} from ${rinfo.address}:${rinfo.port}`)
+                updateToWindow(`peer knocked: ${msg} from ${rinfo.address}:${rinfo.port}`)
                 disconnected = false
                 updateIndicatorToWindow({ status: "connected", id: resp.id })
                 const message = Buffer.from(JSON.stringify({ "id": clientIdentity, "action": "answer" }))
